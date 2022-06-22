@@ -1,0 +1,11 @@
+[package]
+name = "fins-migrations-fairing"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = { git = "https://github.com/SergioBenitez/Rocket", tag = "v0.5.0-rc.1" }
+diesel_migrations = "1.4.0"
+log = "0.4.14"

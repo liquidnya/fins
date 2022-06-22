@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+    "fins-api-catcher",
+    "fins-streamelements-channel",
+    "fins-rest-client",
+    "fins-byte-array",
+    "fins-migrations-fairing",
+]
