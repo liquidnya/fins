@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
-rocket = { git = "https://github.com/SergioBenitez/Rocket", tag = "v0.5.0-rc.1" }
-reqwest = { version = "0.11.8", features = ["json"] }
+rocket = { version = "0.5.0-rc.2" }
+reqwest = { version = "0.11.11", features = ["json"] }

@@ -6,5 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-thiserror= "1.0.30"
-rocket = { git = "https://github.com/SergioBenitez/Rocket", tag = "v0.5.0-rc.1" }
+thiserror = "1.0.31"
+rocket = { version = "0.5.0-rc.2" }
