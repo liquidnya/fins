@@ -1,8 +1,8 @@
-use std::fmt::Display;
-use thiserror::Error;
 use rocket::http::Status;
 use rocket::request::Outcome;
-use rocket::request::{self, Request, FromRequest};
+use rocket::request::{self, FromRequest, Request};
+use std::fmt::Display;
+use thiserror::Error;
 
 const STREAMELEMENTS_HEADER: &str = "x-streamelements-channel";
 const STREAMELEMENTS_HEADER_LEN: usize = 24; // 24 bytes (not 24 characters), but since they are all ASCII it works
@@ -86,9 +86,9 @@ impl<'r> FromRequest<'r> for Channel<'r> {
 #[cfg(test)]
 mod tests {
     use crate::{Channel, ChannelParseError};
+    use rocket::http::Status;
     use rocket::local::blocking::Client;
     use rocket::{get, routes};
-    use rocket::http::Status;
 
     #[test]
     fn valid() {
@@ -121,7 +121,6 @@ mod tests {
 
     #[test]
     fn request() {
-
         #[get("/channel")]
         fn channel(channel: Channel) -> String {
             channel.to_string()
@@ -129,7 +128,7 @@ mod tests {
 
         let rocket = rocket::build().mount("/", routes![channel]);
         let client = Client::tracked(rocket).unwrap();
-        
+
         // no header
         let req = client.get("/channel");
         let response = req.dispatch();
@@ -141,7 +140,9 @@ mod tests {
         assert_eq!(response.status(), Status::BadRequest);
 
         // valid header
-        let req = client.get("/channel").header(&Channel("0123456789abcdef00000000"));
+        let req = client
+            .get("/channel")
+            .header(&Channel("0123456789abcdef00000000"));
         let response = req.dispatch();
         assert_eq!(response.status(), Status::Ok);
         assert_eq!(response.into_string().unwrap(), "0123456789abcdef00000000");

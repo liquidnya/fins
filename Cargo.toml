@@ -1,4 +1,5 @@
 [workspace]
+package.version = "0.2.0"
 
 members = [
     "fins-api-catcher",
@@ -7,3 +8,10 @@ members = [
     "fins-byte-array",
     "fins-migrations-fairing",
 ]
+
+[workspace.dependencies]
+rocket = { git = "https://github.com/liquidnya/Rocket.git", rev = "45a1977cb1bee8650b87598e0792960704031e58", features = [
+    "json",
+] }
+diesel_migrations = "2.0.0"
+

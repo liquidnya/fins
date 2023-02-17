@@ -2,13 +2,14 @@ pub mod logger_writer;
 
 #[macro_export]
 macro_rules! migrations {
-    (@impl) => {
+    (@impl, $MIGRATIONS:expr) => {
         ::rocket::fairing::AdHoc::on_liftoff("Migrate Database", |rocket| {
             Box::pin(async move {
                 let conn = Self::get_one(rocket).await.unwrap();
                 let mut lines =
                     ::fins_migrations_fairing::logger_writer::LoggerWriter::lines("migrate_database", ::log::Level::Info);
-                conn.run(move |c| embedded_migrations::run_with_output(c, &mut lines))
+                use diesel_migrations::MigrationHarness;
+                conn.run(move |c| diesel_migrations::HarnessWithOutput::new(c, &mut lines).run_pending_migrations($MIGRATIONS).map(|_|())) // 
                     .await
                     .unwrap();
             })
@@ -18,8 +19,8 @@ macro_rules! migrations {
     ($ty:ty) => {
         impl $ty {
             pub fn migrate() -> impl ::rocket::fairing::Fairing {
-                ::diesel_migrations::embed_migrations!();
-                migrations!(@impl)
+                pub const MIGRATIONS: diesel_migrations::EmbeddedMigrations = embed_migrations!();
+                migrations!(@impl, MIGRATIONS)
             }
         }
     };

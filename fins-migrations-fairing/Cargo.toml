@@ -1,11 +1,11 @@
 [package]
 name = "fins-migrations-fairing"
-version = "0.1.0"
+version.workspace = true
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rocket = { version = "0.5.0-rc.2" }
-diesel_migrations = "1.4.0"
+rocket.workspace = true
+diesel_migrations.workspace = true
 log = "0.4.17"
