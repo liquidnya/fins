@@ -1,6 +1,7 @@
 [package]
 name = "fins-migrations-fairing"
 version.workspace = true
+license.workspace = true
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
