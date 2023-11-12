@@ -9,7 +9,7 @@ macro_rules! migrations {
                 let mut lines =
                     ::fins_migrations_fairing::logger_writer::LoggerWriter::lines("migrate_database", ::log::Level::Info);
                 use diesel_migrations::MigrationHarness;
-                conn.run(move |c| diesel_migrations::HarnessWithOutput::new(c, &mut lines).run_pending_migrations($MIGRATIONS).map(|_|())) // 
+                conn.run(move |c| diesel_migrations::HarnessWithOutput::new(c, &mut lines).run_pending_migrations($MIGRATIONS).map(|_|())) //
                     .await
                     .unwrap();
             })

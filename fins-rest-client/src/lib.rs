@@ -100,7 +100,7 @@ macro_rules! client {
                     Some(c) => ::rocket::request::Outcome::Success(c),
                     None => {
                         ::log::error!("Missing client fairing for `{}`", ::std::any::type_name::<Self>());
-                        ::rocket::request::Outcome::Failure((::rocket::http::Status::InternalServerError, ()))
+                        ::rocket::request::Outcome::Error((::rocket::http::Status::InternalServerError, ()))
                     }
                 }
             }

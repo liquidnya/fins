@@ -1,4 +1,5 @@
 [workspace]
+resolver = "2"
 members = [
     "fins-api-catcher",
     "fins-streamelements-channel",
@@ -8,11 +9,11 @@ members = [
 ]
 
 [workspace.package]
-version = "0.2.0"
+version = "0.3.0"
 license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
-rocket = { git = "https://github.com/liquidnya/Rocket.git", rev = "45a1977cb1bee8650b87598e0792960704031e58", features = [
+rocket = { version = "0.5.0-rc.4", features = [
     "json",
 ] }
 diesel_migrations = "2.0.0"

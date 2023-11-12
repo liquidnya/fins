@@ -74,10 +74,10 @@ impl<'r> FromRequest<'r> for Channel<'r> {
 
     async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
         match req.headers().get_one(STREAMELEMENTS_HEADER) {
-            None => Outcome::Failure((Status::BadRequest, ChannelError::Missing)),
+            None => Outcome::Error((Status::BadRequest, ChannelError::Missing)),
             Some(channel) => match channel.try_into() {
                 Ok(channel) => Outcome::Success(channel),
-                Err(e) => Outcome::Failure((Status::BadRequest, e.into())),
+                Err(e) => Outcome::Error((Status::BadRequest, e.into())),
             },
         }
     }
