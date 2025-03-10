@@ -60,14 +60,16 @@ macro_rules! client {
 
             $(
                 $fn_vis async fn $fn(&self, $($ident:$ty),*) -> Result<$ret, ::reqwest::Error> {
-                    #[allow(dead_code, unused_variables)]
-                    #[$method($($args)*)]
-                    fn inner($($ident:$ty),*) { unimplemented!("inner rest api call") }
+                    mod inner {
+                        #[allow(dead_code, unused_variables)]
+                        #[$method($($args)*)]
+                        pub fn inner($($ident:$ty),*) { unimplemented!("inner rest api call") }
+                    }
                     // TODO: why is prefix consumed and not passed by reference?
                     // TODO: header support etc.
                     // TODO: does not have to be json
                     self.client
-                        .$method({ uri!(self.url.clone(), inner($($ident),*)) }
+                        .$method({ uri!(self.url.clone(), inner::inner($($ident),*)) }
                         .to_string())
                         .send()
                         .await?
