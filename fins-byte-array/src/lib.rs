@@ -10,7 +10,7 @@ const fn hex_size(n: usize) -> usize {
 }
 
 const fn div_ceil(dividend: usize, diviser: usize) -> usize {
-    (dividend + diviser - 1) / diviser
+    dividend.div_ceil(diviser)
 }
 
 const fn base64_padded_size(n: usize) -> usize {

@@ -10,13 +10,13 @@ const STREAMELEMENTS_HEADER_LEN: usize = 24; // 24 bytes (not 24 characters), bu
 #[derive(Debug, PartialEq)]
 pub struct Channel<'a>(&'a str);
 
-impl<'a> AsRef<str> for Channel<'a> {
+impl AsRef<str> for Channel<'_> {
     fn as_ref(&self) -> &str {
         self.0
     }
 }
 
-impl<'a> Channel<'a> {
+impl Channel<'_> {
     pub fn as_str(&self) -> &str {
         self.as_ref()
     }

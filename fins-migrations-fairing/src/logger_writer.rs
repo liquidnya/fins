@@ -7,7 +7,7 @@ pub struct LoggerWriter<'a> {
     metadata: Metadata<'a>,
 }
 
-impl<'a> Write for LoggerWriter<'a> {
+impl Write for LoggerWriter<'_> {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         std::str::from_utf8(buf)
             .map(|str| {
