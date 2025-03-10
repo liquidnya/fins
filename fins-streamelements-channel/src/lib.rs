@@ -119,13 +119,13 @@ mod tests {
         assert_eq!(result, Err(ChannelParseError::Length(25)));
     }
 
+    #[get("/channel")]
+    fn channel(channel: Channel) -> String {
+        channel.to_string()
+    }
+
     #[test]
     fn request() {
-        #[get("/channel")]
-        fn channel(channel: Channel) -> String {
-            channel.to_string()
-        }
-
         let rocket = rocket::build().mount("/", routes![channel]);
         let client = Client::tracked(rocket).unwrap();
 

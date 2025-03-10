@@ -9,4 +9,4 @@ edition = "2021"
 [dependencies]
 rocket.workspace = true
 diesel_migrations.workspace = true
-log = "0.4.17"
+log.workspace = true

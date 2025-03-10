@@ -7,6 +7,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { version = "1.0", features = ["derive"] }
+serde = { workspace = true, features = ["derive"] }
 rocket.workspace = true
-reqwest = { version = "0.11.11", features = ["json"] }
+reqwest = { workspace = true, features = ["json"] }

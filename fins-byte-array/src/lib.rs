@@ -1,3 +1,4 @@
+use base64::{prelude::BASE64_STANDARD_NO_PAD, Engine as _};
 use serde::{
     de::{Error, SeqAccess, Unexpected, Visitor},
     Deserializer,
@@ -86,47 +87,60 @@ impl<'de, const N: usize> Visitor<'de> for ByteArrayVisitor<N> {
                 }
             }
         };
-        let len = match decoding {
-            None => Ok(0),
-            Some(Decoding::Base64) => base64::decode_config_slice(
-                v,
-                base64::Config::new(base64::CharacterSet::Standard, true),
-                &mut data,
-            )
-            .map_err(|e| match e {
-                base64::DecodeError::InvalidByte(index, data) => Error::invalid_value(
-                    Unexpected::Other(&format!("invalid byte {:#x} at index {}", data, index)),
-                    &self,
-                ),
-                base64::DecodeError::InvalidLength => Error::invalid_length(v.len(), &self), // TODO: why is not Arguments<'_> allowed here?
-                base64::DecodeError::InvalidLastSymbol(index, data) => Error::invalid_value(
-                    Unexpected::Other(&format!(
-                        "invalid last symbol {:#x} at index {}",
-                        data, index
-                    )),
-                    &self,
-                ),
-            }),
-            Some(Decoding::Hex) => {
-                hex::decode_to_slice(v, &mut data)
-                    .map(|()| N)
+        let len =
+            match decoding {
+                None => Ok(0),
+                Some(Decoding::Base64) => BASE64_STANDARD_NO_PAD
+                    .decode_slice(v, &mut data)
                     .map_err(|e| match e {
-                        hex::FromHexError::InvalidHexCharacter { c, index } => {
-                            Error::invalid_value(
-                                Unexpected::Other(&format!(
-                                    "invalid character `{}` at index {}",
-                                    c, index
-                                )),
-                                &self,
-                            )
-                        }
-                        hex::FromHexError::OddLength => Error::invalid_length(v.len(), &self),
-                        hex::FromHexError::InvalidStringLength => {
+                        base64::DecodeSliceError::DecodeError(
+                            base64::DecodeError::InvalidByte(index, data),
+                        ) => Error::invalid_value(
+                            Unexpected::Other(&format!(
+                                "invalid byte {:#x} at index {}",
+                                data, index
+                            )),
+                            &self,
+                        ),
+                        base64::DecodeSliceError::DecodeError(
+                            base64::DecodeError::InvalidPadding,
+                        ) => Error::invalid_value(Unexpected::Other("invalid padding"), &self),
+                        base64::DecodeSliceError::DecodeError(
+                            base64::DecodeError::InvalidLength(_),
+                        ) => Error::invalid_length(v.len(), &self),
+                        base64::DecodeSliceError::DecodeError(
+                            base64::DecodeError::InvalidLastSymbol(index, data),
+                        ) => Error::invalid_value(
+                            Unexpected::Other(&format!(
+                                "invalid last symbol {:#x} at index {}",
+                                data, index
+                            )),
+                            &self,
+                        ),
+                        base64::DecodeSliceError::OutputSliceTooSmall => {
                             Error::invalid_length(v.len(), &self)
                         }
-                    })
-            }
-        }?;
+                    }),
+                Some(Decoding::Hex) => {
+                    hex::decode_to_slice(v, &mut data)
+                        .map(|()| N)
+                        .map_err(|e| match e {
+                            hex::FromHexError::InvalidHexCharacter { c, index } => {
+                                Error::invalid_value(
+                                    Unexpected::Other(&format!(
+                                        "invalid character `{}` at index {}",
+                                        c, index
+                                    )),
+                                    &self,
+                                )
+                            }
+                            hex::FromHexError::OddLength => Error::invalid_length(v.len(), &self),
+                            hex::FromHexError::InvalidStringLength => {
+                                Error::invalid_length(v.len(), &self)
+                            }
+                        })
+                }
+            }?;
         if len != N {
             return Err(Error::invalid_length(v.len(), &self));
         }
